@@ -4,6 +4,7 @@ import Input from "../Common/Form/Input";
 import axios from "axios";
 import { ImCross } from "react-icons/im";
 import Spinner from "../Loader/Spinner";
+import TextArea from "../Common/Form/TextArea";
 
 const SubjectiveExam = ({
   exam,
@@ -23,7 +24,7 @@ const SubjectiveExam = ({
     sq_id: "",
     question: "",
     parent_sq_id: "",
-    long_question: longQuestion,
+    long_question: true,
     marks: 1,
     questionnumber: subjectivesLocal.length + 1,
   });
@@ -138,7 +139,7 @@ const SubjectiveExam = ({
         paper_id: paperId,
         question: currentQuestion.question,
         parent_sq_id: currentQuestion.parent_sq_id,
-        long_question: currentQuestion.long_question,
+        long_question: true,
         marks: currentQuestion.marks,
         questionnumber: currentQuestion.parent_sq_id
           ? nextsibling
@@ -185,7 +186,7 @@ const SubjectiveExam = ({
         question: "",
         parent_sq_id: "",
         marks: 1,
-        long_question: longQuestion,
+        long_question: true,
         questionnumber: isChild ? prevLength + 1 : prevLength + 2,
       });
       setAdding(false);
@@ -196,6 +197,7 @@ const SubjectiveExam = ({
 
   const handleEditMCQ = (question) => () => {
     console.log(editing, "is editing");
+    window.scrollTo(0, 0);
     if (!editing && !adding) {
       setEditing(true);
       setCurrentQuestion(question);
@@ -224,7 +226,7 @@ const SubjectiveExam = ({
         question: currentQuestion.question,
         parent_sq_id: currentQuestion.parent_sq_id,
         questionnumber: currentQuestion.questionnumber,
-        long_question: currentQuestion.long_question,
+        long_question: true,
         marks: currentQuestion.marks,
       })
       .then((res) => {
@@ -358,7 +360,7 @@ const SubjectiveExam = ({
           question: "",
           parent_sq_id: "",
           marks: 1,
-          long_question: false,
+          long_question: true,
           questionnumber: subjectivesLocal.length + 1,
         });
 
@@ -428,7 +430,7 @@ const SubjectiveExam = ({
         question: "",
         parent_sq_id: "",
         marks: 1,
-        long_question: false,
+        long_question: true,
         questionnumber: isChild
           ? subjectivesLocal.length + 1
           : subjectivesLocal.length,
@@ -509,7 +511,7 @@ const SubjectiveExam = ({
                   question: "",
                   parent_sq_id: "",
                   marks: 1,
-                  long_question: longQuestion,
+                  long_question: true,
                   questionnumber: subjectivesLocal.length + 1,
                 });
               }}
@@ -522,7 +524,7 @@ const SubjectiveExam = ({
           </div>
 
           <div className="mb-4">
-            <Input
+            <TextArea
               text={"Question"}
               required
               value={currentQuestion.question}
@@ -558,12 +560,12 @@ const SubjectiveExam = ({
               text={"Marks"}
               type={"number"}
               required
-              min={1}
+              min={0.5}
               value={currentQuestion.marks}
               onChange={(e) =>
                 setCurrentQuestion({
                   ...currentQuestion,
-                  marks: parseInt(e.target.value),
+                  marks: parseFloat(e.target.value),
                 })
               }
             />
@@ -586,7 +588,7 @@ const SubjectiveExam = ({
               />
             )}
           </div>
-          <div className="flex items-center gap-x-3 ml-2">
+          {/* <div className="flex items-center gap-x-3 ml-2">
             <label className="block">Long Question?</label>
             <input
               type="checkbox"
@@ -598,7 +600,7 @@ const SubjectiveExam = ({
           <div className="text-sm ml-2 mb-10">
             {" "}
             (If not checked, max 50 characters will be allowed)
-          </div>
+          </div> */}
           {editing ? (
             <button
               onClick={() => {
