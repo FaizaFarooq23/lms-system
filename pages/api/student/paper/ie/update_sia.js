@@ -19,32 +19,29 @@ export default async function handler(req, res) {
     }
 
     try {
-      const { paperId,total_marks } = fields;
+      const { paperId, studentId } = fields;
+
 
       const file = files.files;
       const oldPath = file.filepath;
       const fileName = file.originalFilename;
-      const newPath = `./public/excels/${fileName}`;
+      const newPath = `./public/attempts/${fileName}`;
       mv(oldPath, newPath, function (err) {
         if (err) {
           console.log(err);
         }
       });
 
-      const newIE = await prisma.ieQuestion.create({
+      const newSIA = await prisma.sIA.create({
         data: {
           fileName: fileName,
           fileUrl: newPath,
-          total_marks: total_marks,
-          paper: {
-            connect: {
-              paper_id: paperId,
-            },
-          },
+          paperId : paperId,
+          studentId : studentId,
         },
       });
 
-      res.status(200).json(newIE);
+      res.status(200).json(newSIA);
     } catch (e) {
       console.log("error");
       console.log(e);

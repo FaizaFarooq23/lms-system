@@ -297,10 +297,8 @@ const StudentsTable = ({
                   ? "bg-green-200"
                   : student.status === "Not Attempted"
                   ? "bg-red-200"
-                  : index % 2 === 0
-                  ? "bg-gray-100"
-                  : student.status === "Commented"
-                  ? "bg-blue-200"
+                  : student.status === "Re-Check"
+                  ? "bg-yellow-200"
                   : "bg-gray-200"
               }`}
             >
@@ -429,7 +427,7 @@ const StudentsTable = ({
               <MdShare className="ml-2 mb-0.5 inline" />
             </button>
           )}
-          {user.level >=4 && (
+          {user.level <1 && (
           <button
             className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
             onClick={handleExport}
