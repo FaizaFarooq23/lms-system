@@ -16,6 +16,8 @@ export default function ObjectivePaper({
   startTime,
   submit,
   studentId,
+  setScore,
+  score
 }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [flags, setFlags] = useState([]);
@@ -45,7 +47,6 @@ export default function ObjectivePaper({
     const generator = seedrandom(studentId);
     const randomNumber = generator();
 
-    console.log(randomNumber);
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(randomNumber * (i + 1));
@@ -60,7 +61,7 @@ export default function ObjectivePaper({
   if (!questions) {
     return <Loader />;
   }
-
+  
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
@@ -76,6 +77,8 @@ export default function ObjectivePaper({
           flags={flags || []}
           setFlags={setFlags}
           setSolveObjective={setSolveObjective}
+          setScore = {setScore}
+          oldScore={score}
         />
       </div>
       <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">

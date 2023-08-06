@@ -25,10 +25,10 @@ export default function Paper() {
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
+  const [score,setScore] = useState(0);
   const [IE, setIE] = useState(null);
 
   const fetchPaper = async () => {
-    console.log("Fetch paper called");
     // fetch paper details from api
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
@@ -84,22 +84,32 @@ export default function Paper() {
   const handleSolveObjective = async () => {
     setObjectiveSubmitModal(true);
   };
-
   const handleSubmitObjective = async () => {
     const isObjective = paperDetails?.subjective_questions?.length === 0;
+    //we will send marks by comparing the answers
+    const timeCompleted = new Date();
+    // get gmt offset in hours, and add that in startTime
+    const timeCompletedString = `${timeCompleted
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${timeCompleted
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
 
     await axios.post("/api/student/paper/update_attempt_status", {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-      status: isObjective ? "Submitted" : "Attempted",
+      status: isObjective ? "Marked" : "Attempted",
+      obtainedMarks: score,
+      timeCompleted: timeCompletedString,
     });
 
     localStorage.removeItem("attempted_questions");
 
     const localPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
     localPaper.flags = [];
-    console.log("local paper", localPaper);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(localPaper));
     setObjectiveSubmitModal(false);
     setSolveObjective(false);
@@ -143,6 +153,8 @@ export default function Paper() {
 
   const updateStatus = () => {
     //update spa status to Attempted
+    const isObjective = paperDetails?.subjective_questions?.length === 0;
+
     const timeCompleted = new Date();
     // get gmt offset in hours, and add that in startTime
     const timeCompletedString = `${timeCompleted
@@ -157,6 +169,8 @@ export default function Paper() {
         studentId: session.data.user.id,
         paperId: paper,
         status: "Submitted",
+        status: isObjective ? "Marked" : "Attempted",
+        obtainedMarks: score,
         timeCompleted: timeCompletedString,
       })
       .then((res) => {
@@ -239,6 +253,8 @@ export default function Paper() {
               attemptTime={attemptTime}
               startTime={startTime}
               submit={handleSubmitObjective}
+              setScore={setScore}
+              score={score}
             />
           ) : (
             <SubjectivePaper

@@ -20,7 +20,7 @@ export default function ReviewContainer() {
   const [subjectiveQuestions, setSubjectiveQuestions] = useState([]);
   const [paperDetails, setPaperDetails] = useState({});
   const [loading, setLoading] = useState(true);
-
+ console.log(objectiveAnswers)
   useEffect(() => {
     if (status === "authenticated") {
       setStudent(session.user.id);
@@ -112,9 +112,10 @@ export default function ReviewContainer() {
       )}
 
       <CommentBox paper={paper} student={student} isStudent={true} />
-
+      
       <MarkPaper
         objectiveAnswers={objectiveAnswers}
+        paperDetails={paperDetails}
         subjectiveAnswers={subjectiveAnswers}
         objectiveQuestions={objectiveQuestions}
         subjectiveQuestions={subjectiveQuestions}
