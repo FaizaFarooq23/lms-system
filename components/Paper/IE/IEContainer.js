@@ -73,34 +73,33 @@ export default function IEContainer({
       });
     }
   };
-
-  const handleDownload = async (fileId) => {
+  const handleDownload = async (fileId) => { // Make sure you pass the studentId to the function
     try {
       let response;
-      if(!faculty||markTo){
-      response = await axios.get(`/api/paper/get_downloadIE`, {
-        params: {
-          fileId: fileId,
-        },
-        responseType: "blob", // Set the response type to 'blob'
-      });
-    }
-    else{
-
-      response = await axios.get(`/api/paper/marking/download_IE_attempt`, {
-        params: {
-          paperId: paperId,
-          studentId: studentId,
-        },
-        responseType: "blob", // Set the response type to 'blob'
-      });
-    }
-
+      if (!faculty || markTo) {
+        response = await axios.get(`/api/paper/get_downloadIE`, {
+          params: {
+            fileId: fileId,
+          },
+          responseType: "blob",
+        });
+      } else {
+        response = await axios.get(`/api/paper/marking/download_IE_attempt`, {
+          params: {
+            paperId: paperId,
+            studentId: studentId,
+          },
+          responseType: "blob",
+        });
+      }
+  
       const href = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");
+      
+      // Include student ID in the file name
+      const fileNameWithStudentId = response.headers["content-disposition"].split("filename=")[1];
       link.href = href;
-      link.download =
-        response.headers["content-disposition"].split("filename=")[1];
+      link.download = studentId + "_" + fileNameWithStudentId; // Add student ID to the filename
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -109,6 +108,7 @@ export default function IEContainer({
       console.error("Error downloading file:", error);
     }
   };
+  
   console.log(IeFiles,"iefiles")
   return (
     <>
@@ -120,7 +120,7 @@ export default function IEContainer({
           {IeFiles?.ie_questions.map((question, index) => (
             <div key={index} className="flex">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
                 onClick={() => handleDownload(question.ie_id)}
               >
                 Download Exam 
