@@ -25,6 +25,10 @@ const Index = () => {
 
   const { exam_id, p_number } = router.query;
 
+  const handlePrint = () => {
+    window.print();
+  }
+
   useEffect(() => {
     if (paperDetails) {
       async function fetchIE() {
@@ -32,7 +36,7 @@ const Index = () => {
           try {
             const res = await axios.get(`/api/faculty/get_ie_files`, {
               params: {
-                paperId: paperDetails?.paper_id,
+                paperId: paperDetails.paper_id,
               },
             });
             setIeFiles(res.data);
@@ -118,7 +122,7 @@ const Index = () => {
 
         setPaperDetails(res.data);
         setObjectiveQuestions(res.data.objective_questions);
-        if (paperDetails?.paper_type !== "Objective") {
+        if (paperDetails.paper_type !== "Objective") {
           setSubjectiveQuestions(res.data.subjective_questions);
         }
         setLoading(false);
@@ -159,13 +163,13 @@ const Index = () => {
                 questions={objectiveQuestions}
                 answers={objectiveAnswers}
               />
-              {paperDetails?.paper_type !== "Objective" && (
+              {paperDetails.paper_type !== "Objective" && (
                 <AnswersTable
                   questions={subjectiveQuestions}
                   answers={subjectiveAnswers}
                 />
               )}
-              {paperDetails?.paper_type === "IE" && (
+              {paperDetails.paper_type === "IE" && (
                 <IEContainer
                   IeFiles={IeFiles}
                   faculty={true}
@@ -177,6 +181,7 @@ const Index = () => {
 
               <CommentBox student={p_number} paper={exam_id} />
               <MarkPaper
+                print={handlePrint}
                 objectiveAnswers={objectiveAnswers}
                 subjectiveAnswers={subjectiveAnswers}
                 objectiveQuestions={objectiveQuestions}
